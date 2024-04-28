@@ -2,16 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"os"
-	db "user-management/internal"
+	db "user-management/internal/database"
+  config "user-management/internal/configuration"
 )
 
 func main() {
-  err := godotenv.Load()
-  if err != nil {
-    fmt.Println("Error loading .env file")
-  }
+  config.StartEnv()
 
 	db, err := db.ConnectToDB(os.Getenv("HOST"), os.Getenv("PORT"),
 		os.Getenv("USERNAME"), os.Getenv("PASSWORD"))
