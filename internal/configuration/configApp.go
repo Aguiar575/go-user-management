@@ -1,13 +1,15 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"fmt"
+
+	"github.com/joho/godotenv"
 )
 
 func StartEnv() {
-  err := godotenv.Load()
-  if err != nil {
-    fmt.Println("Error loading .env file")
-  }
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
 }
+
