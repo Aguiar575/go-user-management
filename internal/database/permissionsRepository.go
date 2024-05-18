@@ -2,23 +2,24 @@ package db
 
 import (
 	"database/sql"
-  models "user-management/internal/models"
+	models "user-management/internal/models"
 )
 
-type UsersPermissionsRepository interface {
-  AddPermission(permission *models.UserPermission) error
-  GetUserPermissions(userID int) ([]models.UserPermission, error)
+type PermissionsRepository interface {
+	AddPermission(permission *models.UserPermission) error
+	GetUserPermissions(userID int) ([]models.UserPermission, error)
+	DeletePermission(permissionID int) error
 }
 
-type usersPermissionsRepositoryRepository struct {
-  db *sql.DB
+type permissionsRepositoryImpl struct {
+	db *sql.DB
 }
 
-func NewUsersPermissionsRepository(db *sql.DB) UsersPermissionsRepository {
-  return &usersPermissionsRepositoryRepository{db: db}
+func NewUsersPermissionsRepository(db *sql.DB) PermissionsRepository {
+	return &permissionsRepositoryImpl{db: db}
 }
 
-func (ur *usersPermissionsRepositoryRepository) AddPermission(permission *models.UserPermission) error {
+func (ur *permissionsRepositoryImpl) AddPermission(permission *models.UserPermission) error {
 	query := `
 		INSERT INTO user_permissions (user_id, context_id, read, write)
 		VALUES (?, ?, ?, ?)
@@ -27,7 +28,7 @@ func (ur *usersPermissionsRepositoryRepository) AddPermission(permission *models
 	return err
 }
 
-func (ur *usersPermissionsRepositoryRepository) GetUserPermissions(userID int) ([]models.UserPermission, error) {
+func (ur *permissionsRepositoryImpl) GetUserPermissions(userID int) ([]models.UserPermission, error) {
 	var permissions []models.UserPermission
 
 	rows, err := ur.db.Query("SELECT * FROM user_permissions WHERE user_id = ?", userID)
@@ -50,4 +51,10 @@ func (ur *usersPermissionsRepositoryRepository) GetUserPermissions(userID int) (
 	}
 
 	return permissions, nil
+}
+
+func (ur *permissionsRepositoryImpl) DeletePermission(permissionID int) error {
+	query := "DELETE FROM user_permissions WHERE id = ?"
+	_, err := ur.db.Exec(query, permissionID)
+	return err
 }
