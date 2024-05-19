@@ -45,34 +45,19 @@ func createDatabase(databaseName string, db *sql.DB) {
 }
 
 func tableUp(db *sql.DB) {
-	userTableQuery := `
-		CREATE TABLE IF NOT EXISTS users (
-			id INT PRIMARY KEY AUTO_INCREMENT,
-			username VARCHAR(255) NOT NULL UNIQUE,
-			email VARCHAR(255) NOT NULL UNIQUE
-		);
-	`
-	_, err := db.Exec(userTableQuery)
-	if err != nil {
-		fmt.Println("Error creating users table:", err)
-		return
-	}
-
 	permissionTableQuery := `
 		CREATE TABLE IF NOT EXISTS user_permissions (
 			id INT PRIMARY KEY AUTO_INCREMENT,
 			user_id INT NOT NULL,
 			context_id INT NOT NULL,
-			read BOOL NOT NULL,
-			write BOOL NOT NULL,
-			FOREIGN KEY (user_id) REFERENCES users(id)
-		);
-	`
-	_, err = db.Exec(permissionTableQuery)
+			can_read BOOL NOT NULL,
+			can_write BOOL NOT NULL
+	);`
+
+	_, err := db.Exec(permissionTableQuery)
 	if err != nil {
 		fmt.Println("Error creating user_permissions table:", err)
 	} else {
 		fmt.Println("Tables created successfully!")
 	}
 }
-

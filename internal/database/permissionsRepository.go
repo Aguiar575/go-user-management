@@ -21,7 +21,7 @@ func NewUsersPermissionsRepository(db *sql.DB) PermissionsRepository {
 
 func (ur *permissionsRepositoryImpl) AddPermission(permission *models.UserPermission) error {
 	query := `
-		INSERT INTO user_permissions (user_id, context_id, read, write)
+		INSERT INTO user_permissions (user_id, context_id, can_read, can_write)
 		VALUES (?, ?, ?, ?)
 	`
 	_, err := ur.db.Exec(query, permission.UserID, permission.ContextID, permission.Read, permission.Write)
